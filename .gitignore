@@ -7,7 +7,6 @@ node_modules/
 .expo/
 dist/
 web-build/
-expo-env.d.ts
 
 # Native
 *.orig.*
@@ -31,6 +30,32 @@ yarn-error.*
 
 # local env files
 .env*.local
+.env
 
 # typescript
 *.tsbuildinfo
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Temporary files
+*.log
+*.tmp
+tmp/
+
+# iOS
+ios/Pods/
+ios/build/
+*.xcuserstate
+ios/.xcode.env.local
+
+# Android
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+*.keystore
+!debug.keystore
