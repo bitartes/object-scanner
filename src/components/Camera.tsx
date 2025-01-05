@@ -1,17 +1,17 @@
-import React from 'react';
-import { View, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
-import { CameraView } from 'expo-camera';
-import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-import { GestureDetector } from 'react-native-gesture-handler';
+import React from 'react'
+import { View, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native'
+import { CameraView } from 'expo-camera'
+import { MaterialIcons, Ionicons } from '@expo/vector-icons'
+import { GestureDetector } from 'react-native-gesture-handler'
 
 interface CameraProps {
-  cameraRef: React.RefObject<CameraView>;
-  facing: 'front' | 'back';
-  zoom: number;
-  scanning: boolean;
-  pinchGesture: any;
-  onToggleFacing: () => void;
-  onTakePicture: () => void;
+  cameraRef: React.RefObject<CameraView>
+  facing: 'front' | 'back'
+  zoom: number
+  scanning: boolean
+  pinchGesture: any
+  onToggleFacing: () => void
+  onTakePicture: () => void
 }
 
 export const Camera: React.FC<CameraProps> = ({
@@ -25,18 +25,10 @@ export const Camera: React.FC<CameraProps> = ({
 }) => {
   return (
     <GestureDetector gesture={pinchGesture}>
-      <CameraView 
-        style={styles.camera} 
-        ref={cameraRef} 
-        facing={facing}
-        zoom={zoom}
-      >
+      <CameraView style={styles.camera} ref={cameraRef} facing={facing} zoom={zoom}>
         <View style={styles.overlay}>
           <View style={styles.header}>
-            <TouchableOpacity
-              style={styles.flipButton}
-              onPress={onToggleFacing}
-            >
+            <TouchableOpacity style={styles.flipButton} onPress={onToggleFacing}>
               <MaterialIcons name="flip-camera-ios" size={28} color="white" />
             </TouchableOpacity>
           </View>
@@ -64,8 +56,8 @@ export const Camera: React.FC<CameraProps> = ({
         </View>
       </CameraView>
     </GestureDetector>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   camera: {
@@ -159,4 +151,4 @@ const styles = StyleSheet.create({
   buttonDisabled: {
     backgroundColor: '#64b5f6',
   },
-});
+})

@@ -1,10 +1,10 @@
-import React from 'react';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { Camera } from '../components/Camera';
-import { useCamera } from '../hooks/useCamera';
-import { analyzeImage } from '../services/openai';
+import React from 'react'
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { Camera } from '../components/Camera'
+import { useCamera } from '../hooks/useCamera'
+import { analyzeImage } from '../services/openai'
 
 export const ScannerScreen: React.FC = () => {
   const {
@@ -20,44 +20,36 @@ export const ScannerScreen: React.FC = () => {
     pinchGesture,
     toggleCameraFacing,
     takePicture,
-  } = useCamera();
+  } = useCamera()
 
   const handleCapture = async () => {
-    setScanning(true);
-    setResult('');
+    setScanning(true)
+    setResult('')
 
     try {
-      const base64Image = await takePicture();
+      const base64Image = await takePicture()
       if (base64Image) {
-        const analysis = await analyzeImage(base64Image);
-        setResult(analysis);
+        const analysis = await analyzeImage(base64Image)
+        setResult(analysis)
       }
     } catch (error) {
-      setResult(error instanceof Error ? error.message : String(error));
+      setResult(error instanceof Error ? error.message : String(error))
     } finally {
-      setScanning(false);
+      setScanning(false)
     }
-  };
+  }
 
   if (!permission) {
     return (
       <SafeAreaView style={styles.container}>
-        <LinearGradient
-          colors={['#1a237e', '#0d47a1']}
-          style={styles.gradientContainer}
-        >
-          <Text style={styles.permissionText}>
-            We need your permission to use the camera
-          </Text>
-          <TouchableOpacity
-            style={styles.permissionButton}
-            onPress={requestPermission}
-          >
+        <LinearGradient colors={['#1a237e', '#0d47a1']} style={styles.gradientContainer}>
+          <Text style={styles.permissionText}>We need your permission to use the camera</Text>
+          <TouchableOpacity style={styles.permissionButton} onPress={requestPermission}>
             <Text style={styles.permissionButtonText}>Grant Permission</Text>
           </TouchableOpacity>
         </LinearGradient>
       </SafeAreaView>
-    );
+    )
   }
 
   return (
@@ -73,17 +65,14 @@ export const ScannerScreen: React.FC = () => {
           onTakePicture={handleCapture}
         />
         {result && !scanning && (
-          <LinearGradient
-            colors={['rgba(0,0,0,0.9)', 'rgba(0,0,0,0.7)']}
-            style={styles.resultContainer}
-          >
+          <LinearGradient colors={['rgba(0,0,0,0.9)', 'rgba(0,0,0,0.7)']} style={styles.resultContainer}>
             <Text style={styles.resultText}>{result}</Text>
           </LinearGradient>
         )}
       </SafeAreaView>
     </GestureHandlerRootView>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -125,4 +114,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
-});
+})

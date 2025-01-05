@@ -13,6 +13,7 @@ A React Native mobile application that uses your device's camera and OpenAI's Vi
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
+
 - [Node.js](https://nodejs.org/) (version 14 or higher)
 - [Expo CLI](https://docs.expo.dev/get-started/installation/)
 - [OpenAI API Key](https://platform.openai.com/api-keys)
@@ -20,17 +21,20 @@ Before you begin, ensure you have the following installed:
 ## Installation
 
 1. Clone the repository:
+
 ```bash
 git clone https://github.com/yourusername/object-scanner.git
 cd object-scanner
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Create a `.env` file in the root directory and add your OpenAI API key:
+
 ```bash
 OPENAI_API_KEY=your_api_key_here
 ```
@@ -38,6 +42,7 @@ OPENAI_API_KEY=your_api_key_here
 ## Running the App
 
 1. Start the development server:
+
 ```bash
 npx expo start
 ```
