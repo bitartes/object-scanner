@@ -4,6 +4,7 @@ import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
+import { GestureDetector, Gesture, GestureHandlerRootView } from 'react-native-gesture-handler';
 import OpenAI from 'openai';
 import { OPENAI_API_KEY } from '@env';
 
@@ -16,7 +17,21 @@ export default function App() {
   const [scanning, setScanning] = useState(false);
   const [result, setResult] = useState('');
   const [facing, setFacing] = useState<CameraType>('back');
+  const [zoom, setZoom] = useState(0);
   const cameraRef = useRef<CameraView>(null);
+  const lastScale = useRef(1);
+
+  const pinchGesture = Gesture.Pinch()
+    .onStart(() => {
+      lastScale.current = 1;
+    })
+    .onUpdate((event) => {
+      const delta = event.scale - lastScale.current;
+      lastScale.current = event.scale;
+      
+      const newZoom = Math.min(Math.max(zoom + (delta * 0.3), 0), 0.9);
+      setZoom(newZoom);
+    });
 
   if (!permission) {
     return (
@@ -100,51 +115,60 @@ export default function App() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <CameraView style={styles.camera} ref={cameraRef} facing={facing}>
-        <View style={styles.overlay}>
-          <View style={styles.header}>
-            <Text style={styles.headerText}>Object Scanner</Text>
-            <TouchableOpacity
-              style={styles.flipButton}
-              onPress={toggleCameraFacing}
-            >
-              <MaterialIcons name="flip-camera-ios" size={28} color="white" />
-            </TouchableOpacity>
-          </View>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaView style={styles.container}>
+        <GestureDetector gesture={pinchGesture}>
+          <CameraView 
+            style={styles.camera} 
+            ref={cameraRef} 
+            facing={facing}
+            zoom={zoom}
+          >
+            <View style={styles.overlay}>
+              <View style={styles.header}>
+                <Text style={styles.headerText}>Object Scanner</Text>
+                <TouchableOpacity
+                  style={styles.flipButton}
+                  onPress={toggleCameraFacing}
+                >
+                  <MaterialIcons name="flip-camera-ios" size={28} color="white" />
+                </TouchableOpacity>
+              </View>
 
-          <View style={styles.scanFrame}>
-            <View style={styles.cornerTL} />
-            <View style={styles.cornerTR} />
-            <View style={styles.cornerBL} />
-            <View style={styles.cornerBR} />
-          </View>
+              <View style={styles.scanFrame}>
+                <View style={styles.cornerTL} />
+                <View style={styles.cornerTR} />
+                <View style={styles.cornerBL} />
+                <View style={styles.cornerBR} />
+              </View>
 
-          {result && !scanning && (
-            <LinearGradient
-              colors={['rgba(0,0,0,0.9)', 'rgba(0,0,0,0.7)']}
-              style={styles.resultContainer}
-            >
-              <Text style={styles.resultText}>{result}</Text>
-            </LinearGradient>
-          )}
-
-          <View style={styles.bottomControls}>
-            <TouchableOpacity
-              style={[styles.captureButton, scanning && styles.buttonDisabled]}
-              onPress={takePicture}
-              disabled={scanning}
-            >
-              {scanning ? (
-                <ActivityIndicator color="#fff" size="large" />
-              ) : (
-                <Ionicons name="scan" size={30} color="white" />
+              {result && !scanning && (
+                <LinearGradient
+                  colors={['rgba(0,0,0,0.9)', 'rgba(0,0,0,0.7)']}
+                  style={styles.resultContainer}
+                >
+                  <Text style={styles.resultText}>{result}</Text>
+                </LinearGradient>
               )}
-            </TouchableOpacity>
-          </View>
-        </View>
-      </CameraView>
-    </SafeAreaView>
+
+              <View style={styles.bottomControls}>
+                <TouchableOpacity
+                  style={[styles.captureButton, scanning && styles.buttonDisabled]}
+                  onPress={takePicture}
+                  disabled={scanning}
+                >
+                  {scanning ? (
+                    <ActivityIndicator color="#fff" size="large" />
+                  ) : (
+                    <Ionicons name="scan" size={30} color="white" />
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </CameraView>
+        </GestureDetector>
+      </SafeAreaView>
+    </GestureHandlerRootView>
   );
 }
 
