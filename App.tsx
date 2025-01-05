@@ -3,11 +3,9 @@ import { StyleSheet, Text, View, TouchableOpacity, Dimensions, ActivityIndicator
 import { CameraType, CameraView, useCameraPermissions } from 'expo-camera';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
-import * as ImageManipulator from 'expo-image-manipulator';
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import OpenAI from 'openai';
 import { OPENAI_API_KEY } from '@env';
-
-const { width, height } = Dimensions.get('window');
 
 const openai = new OpenAI({
   apiKey: OPENAI_API_KEY,
@@ -63,13 +61,13 @@ export default function App() {
         quality: 0.8,
         base64: true,
       });
-      
-      const manipulatedImage = await ImageManipulator.manipulateAsync(
+
+      const manipulatedImage = await manipulateAsync(
         photo.uri,
         [{ resize: { width: 800 } }],
-        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG, base64: true }
+        { compress: 0.8, format: SaveFormat.JPEG, base64: true }
       );
-      
+
       const response = await openai.chat.completions.create({
         model: "gpt-4o-mini",
         messages: [
@@ -128,14 +126,6 @@ export default function App() {
               style={styles.resultContainer}
             >
               <Text style={styles.resultText}>{result}</Text>
-              <TouchableOpacity
-                style={styles.newScanButton}
-                onPress={() => {
-                  setResult('');
-                }}
-              >
-                <Text style={styles.newScanButtonText}>New Scan</Text>
-              </TouchableOpacity>
             </LinearGradient>
           )}
 
@@ -284,18 +274,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '500',
     marginBottom: 10,
-  },
-  newScanButton: {
-    backgroundColor: '#2196F3',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 20,
-    marginTop: 10,
-  },
-  newScanButtonText: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 'bold',
   },
   permissionText: {
     color: 'white',
